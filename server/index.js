@@ -17,13 +17,34 @@ app.get('/', (req, res) => {
 
 app.use(express.static(path.join(__dirname, '..')));
 
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  }
-});
+const PORT = process.env.PORT || 3001;
+const HTTPS_PORT = process.env.HTTPS_PORT || 3443;
+const HOST = '0.0.0.0'; // Aceitar conexões de qualquer IP na rede
+
+// Detectar se está rodando no Render (HTTPS)
+const isRender = process.env.RENDER || process.env.PORT;
+let server, io;
+
+if (isRender) {
+  // No Render, usar HTTPS com o servidor HTTP (Render faz proxy HTTPS)
+  server = http.createServer(app);
+  io = new Server(server, {
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST']
+    },
+    transports: ['websocket', 'polling']
+  });
+} else {
+  // Local, usar HTTP
+  server = http.createServer(app);
+  io = new Server(server, {
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST']
+    }
+  });
+}
 
 // Rota para buscar histórico de mensagens
 app.get('/api/messages', (req, res) => {
@@ -78,10 +99,6 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 3001;
-const HTTPS_PORT = process.env.HTTPS_PORT || 3443;
-const HOST = '0.0.0.0'; // Aceitar conexões de qualquer IP na rede
-
 // Tentar usar HTTPS se certificados existirem
 let sslOptions = null;
 try {
@@ -96,16 +113,22 @@ try {
   console.log('  openssl req -nodes -new -x509 -keyout server.key -out server.cert');
 }
 
-// Iniciar servidor HTTP
+// Iniciar servidor
 server.listen(PORT, HOST, () => {
   const os = require('os');
   const interfaces = os.networkInterfaces();
-  console.log(`\n🚀 Servidor HTTP rodando em http://localhost:${PORT}`);
-  console.log(`Para acessar na rede local, use um destes IPs:`);
-  for (const name of Object.keys(interfaces)) {
-    for (const iface of interfaces[name]) {
-      if (iface.family === 'IPv4' && !iface.internal) {
-        console.log(`  http://${iface.address}:${PORT}`);
+  
+  if (isRender) {
+    console.log(`\n🚀 Servidor rodando no Render na porta ${PORT}`);
+    console.log(`🔗 URL: https://chattempreal.onrender.com`);
+  } else {
+    console.log(`\n🚀 Servidor HTTP rodando em http://localhost:${PORT}`);
+    console.log(`Para acessar na rede local, use um destes IPs:`);
+    for (const name of Object.keys(interfaces)) {
+      for (const iface of interfaces[name]) {
+        if (iface.family === 'IPv4' && !iface.internal) {
+          console.log(`  http://${iface.address}:${PORT}`);
+        }
       }
     }
   }
