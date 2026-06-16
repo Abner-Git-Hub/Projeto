@@ -33,7 +33,8 @@ if (isRender) {
       origin: '*',
       methods: ['GET', 'POST']
     },
-    transports: ['websocket', 'polling']
+    transports: ['polling'], // Forçar polling para Render
+    allowUpgrades: false
   });
 } else {
   // Local, usar HTTP
