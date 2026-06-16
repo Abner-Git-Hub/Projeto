@@ -266,7 +266,7 @@
             }
             
             // Para HTTPS (porta 443), não especificar porta
-            if (protocol === 'https:' && !port) {
+            if (protocol === 'https:') {
                 return `${protocol}//${host}`;
             }
             
