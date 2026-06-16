@@ -259,10 +259,17 @@
         function getServerBase() {
             const protocol = window.location.protocol;
             const host = window.location.hostname;
-            const port = window.location.port || '3001';
+            const port = window.location.port;
+            
             if (protocol === 'file:') {
                 return 'http://localhost:3001';
             }
+            
+            // Para HTTPS (porta 443), não especificar porta
+            if (protocol === 'https:' && !port) {
+                return `${protocol}//${host}`;
+            }
+            
             return `${protocol}//${host}${port ? `:${port}` : ''}`;
         }
 
