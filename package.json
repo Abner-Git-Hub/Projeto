@@ -1,0 +1,32 @@
+{
+  "name": "chat-realtime",
+  "version": "1.0.0",
+  "description": "Chat em tempo real com Socket.io - App Desktop",
+  "main": "electron.js",
+  "author": "Seu Nome",
+  "productName": "Chat em Tempo Real",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server/index.js",
+    "client": "cd client && npm run dev",
+    "install:all": "npm install && cd client && npm install",
+    "electron": "electron .",
+    "electron-dev": "electron .",
+    "app": "node start-app.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "electron": "^42.4.0",
+    "sharp": "^0.33.0",
+    "selfsigned": "^2.4.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
+  }
+}

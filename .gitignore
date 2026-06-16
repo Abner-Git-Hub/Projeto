@@ -1,0 +1,12 @@
+node_modules/
+android/
+ios/
+www/
+server/chat.db
+server.key
+server.cert
+*.apk
+*.log
+.DS_Store
+.idea/
+*.iml
