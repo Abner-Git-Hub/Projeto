@@ -2,7 +2,6 @@
   "name": "chat-realtime",
   "version": "1.0.0",
   "description": "Chat em tempo real com Socket.io - App Desktop",
-  "main": "electron.js",
   "author": "Seu Nome",
   "productName": "Chat em Tempo Real",
   "scripts": {
